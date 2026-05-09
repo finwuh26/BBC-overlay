@@ -15,13 +15,18 @@ const BBC_LOGO = () => (
   </div>
 );
 
-const CrystalLogo = () => (
-    <div className="w-[38px] h-[38px] relative shrink-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-cyan-400 via-fuchsia-500 to-yellow-400 opacity-90" style={{ clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)' }}></div>
-        <div className="absolute inset-[3px] bg-gradient-to-tr from-blue-500 via-purple-500 to-pink-500 opacity-90 mix-blend-screen" style={{ clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)' }}></div>
-        <div className="absolute inset-0 drop-shadow-md bg-white/30" style={{ clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' }}></div>
-    </div>
-)
+const CrystalLogo = ({ url }: { url?: string }) => {
+    if (url) {
+        return <img src={url} alt="Crystal Logo" className="w-[42px] h-[42px] object-contain shrink-0" />;
+    }
+    return (
+        <div className="w-[38px] h-[38px] relative shrink-0">
+            <div className="absolute inset-0 bg-gradient-to-br from-[#00E5FF] via-[#E4003B] to-[#FFE000] opacity-90" style={{ clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)' }}></div>
+            <div className="absolute inset-[2px] bg-gradient-to-tr from-[#12B6CF] via-[#D3008A] to-[#02A95B] opacity-90 mix-blend-screen" style={{ clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)' }}></div>
+            <div className="absolute inset-0 drop-shadow-md bg-white/20" style={{ clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' }}></div>
+        </div>
+    );
+};
 
 const getPartyTextColor = (partyId: string) => {
     return ['ld', 'snp', 'ref', 'pc'].includes(partyId.toLowerCase()) ? 'text-black' : 'text-white';
@@ -40,21 +45,23 @@ export default function Overlay() {
 
   const displayParties = data.parties.filter((p: any) => p.visible);
 
+  const primaryBg = { backgroundColor: data.primaryColor || '#280058' };
+  const darkBg = { backgroundColor: data.darkColor || '#1E0043' };
+
   if (data.theme === 'news') {
     return (
       <div className="w-full h-screen bg-transparent pointer-events-none overflow-hidden relative font-sans" style={{ '--font-sans': '"Reith Sans", "Helvetica Neue", Helvetica, Arial, sans-serif' } as React.CSSProperties}>
-        {/* Lower Third Graphic Container - 1:1 BBC Style */}
         <div className="absolute bottom-[40px] left-[40px] right-[40px] flex flex-col drop-shadow-lg font-sans">
           
-          <div className="flex flex-col bg-[#B80000]">
+          <div className="flex flex-col" style={primaryBg}>
               <div className="flex w-full items-center pl-6 pt-5 pb-1">
                    <div className="flex shrink-0 items-center gap-1.5 font-bold">
                       <div className="flex gap-[3px]">
-                        <span className="w-[30px] h-[30px] flex items-center justify-center bg-white text-black text-[18px] font-bold">B</span>
-                        <span className="w-[30px] h-[30px] flex items-center justify-center bg-white text-black text-[18px] font-bold">B</span>
-                        <span className="w-[30px] h-[30px] flex items-center justify-center bg-white text-black text-[18px] font-bold">C</span>
+                        <span className="w-[30px] h-[30px] flex items-center justify-center bg-white text-black text-[18px] font-bold" style={{ backgroundColor: data.bbcBoxesClass?.includes('white') ? 'white' : 'transparent', color: data.bbcBoxesClass?.includes('black') ? 'black' : 'white' }}>B</span>
+                        <span className="w-[30px] h-[30px] flex items-center justify-center bg-white text-black text-[18px] font-bold" style={{ backgroundColor: data.bbcBoxesClass?.includes('white') ? 'white' : 'transparent', color: data.bbcBoxesClass?.includes('black') ? 'black' : 'white' }}>B</span>
+                        <span className="w-[30px] h-[30px] flex items-center justify-center bg-white text-black text-[18px] font-bold" style={{ backgroundColor: data.bbcBoxesClass?.includes('white') ? 'white' : 'transparent', color: data.bbcBoxesClass?.includes('black') ? 'black' : 'white' }}>C</span>
                       </div>
-                      <span className="text-white text-[24px] tracking-widest ml-1 font-medium pb-0.5">NEWS</span>
+                      <span className="text-white text-[24px] tracking-widest ml-1 font-medium pb-0.5">{data.logoTitle}</span>
                   </div>
               </div>
               <div className="flex w-full">
@@ -77,7 +84,7 @@ export default function Overlay() {
               {/* Ticker Content */}
               <div className="flex-1 bg-white overflow-hidden shadow-inner flex items-center px-6">
                       <div className="flex items-center h-full gap-4 text-[#404040] text-[26px] font-medium leading-none">
-                          <div className="w-[14px] h-[14px] bg-[#B80000] shrink-0 mb-[2px]"></div>
+                          <div className="w-[14px] h-[14px] shrink-0 mb-[2px]" style={primaryBg}></div>
                           <AnimatePresence mode="wait">
                               <motion.span
                                   key={data.tickerItems[0]}
@@ -93,7 +100,7 @@ export default function Overlay() {
               </div>
   
               {/* Clock */}
-              <div className="w-[120px] flex items-center justify-center bg-[#B80000] text-white font-bold text-[30px] shrink-0">
+              <div className="w-[120px] flex items-center justify-center text-white font-bold text-[30px] shrink-0" style={darkBg}>
                   {format(time, "HH:mm")}
               </div>
           </div>
@@ -111,9 +118,16 @@ export default function Overlay() {
         <div className="flex items-end mb-[2px] z-10 w-full relative">
           <div className="flex items-end flex-initial">
              {/* Main Logo Block */}
-            <div className="bg-[#280058] px-5 py-3 flex items-center gap-4">
-              <BBC_LOGO />
-              <CrystalLogo />
+            <div className="px-5 py-3 flex items-center gap-4" style={primaryBg}>
+              <div className="flex shrink-0 items-center gap-1.5 font-bold">
+                <div className="flex gap-[3px]">
+                  <span className="w-[30px] h-[30px] flex items-center justify-center bg-white text-black text-[18px] font-bold">B</span>
+                  <span className="w-[30px] h-[30px] flex items-center justify-center bg-white text-black text-[18px] font-bold">B</span>
+                  <span className="w-[30px] h-[30px] flex items-center justify-center bg-white text-black text-[18px] font-bold">C</span>
+                </div>
+                <span className="text-white text-[24px] tracking-widest ml-1 font-medium pb-0.5">{data.logoTitle || "ELECTION"}</span>
+              </div>
+              <CrystalLogo url={data.crystalUrl} />
             </div>
 
             {/* Breaking Badge next to it */}
@@ -123,7 +137,8 @@ export default function Overlay() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -20 }}
-                  className="bg-white text-[#280058] font-bold px-4 py-[13px] text-[22px] uppercase tracking-widest ml-[2px]"
+                  className="bg-white font-bold px-4 py-[13px] text-[22px] uppercase tracking-widest ml-[2px]"
+                  style={{ color: data.primaryColor || '#280058' }}
                 >
                   BREAKING
                 </motion.div>
@@ -136,8 +151,8 @@ export default function Overlay() {
           </div>
         </div>
 
-        {/* Main Content Pane (Purple) */}
-        <div className="flex flex-col bg-[#280058]">
+        {/* Main Content Pane */}
+        <div className="flex flex-col" style={primaryBg}>
             <div className="flex w-full">
                 {/* Headlines */}
                 <div className="flex-1 px-8 py-7 flex flex-col justify-center">
@@ -161,12 +176,12 @@ export default function Overlay() {
                 </div>
 
                 {/* Scoreboard Block */}
-                <div className="flex flex-col bg-[#1E0043] pl-[1px]">
+                <div className="flex flex-col pl-[1px]" style={darkBg}>
                     <div className="flex h-full">
                          {displayParties.map((party: any) => {
                              const textColorClass = getPartyTextColor(party.id);
                              return (
-                                <div key={party.id} className="flex flex-col border-r border-[#1E0043] last:border-0" style={{ width: displayParties.length > 4 ? '110px' : '130px' }}>
+                                <div key={party.id} className="flex flex-col border-r last:border-0" style={{ width: displayParties.length > 4 ? '110px' : '130px', borderColor: data.darkColor || '#1E0043' }}>
                                     <div 
                                         className={cn("h-[48px] flex items-center justify-center font-bold text-[26px] uppercase border-b border-black/15", textColorClass)}
                                         style={{ backgroundColor: party.color }}
@@ -192,7 +207,7 @@ export default function Overlay() {
                          })}
                     </div>
                     {/* Majority Bar */}
-                    <div className="bg-[#1E0043] text-center text-white py-[6px] font-medium text-[20px] tracking-wide">
+                    <div className="text-center text-white py-[6px] font-medium text-[20px] tracking-wide" style={darkBg}>
                         {data.majorityTarget} for majority
                     </div>
                 </div>
@@ -212,7 +227,7 @@ export default function Overlay() {
                                  const textColorClass = getPartyTextColor(res.partyId || 'lab');
                                  return (
                                      <div key={i} className="flex h-full items-center border-r-[3px] border-white font-medium text-[24px]">
-                                         <div className="px-8 h-full flex items-center bg-[#E5E5E5] text-black shrink-0 relative overflow-hidden">
+                                         <div className="px-8 h-full flex items-center bg-[#E5E5E5] text-black shrink-0 relative overflow-hidden text-clip whitespace-nowrap" style={{ minWidth: "220px" }}>
                                              <div className="absolute left-0 top-0 bottom-0 w-2" style={{ backgroundColor: res.partyColor }}></div>
                                              {res.constituency}
                                          </div>
@@ -229,8 +244,8 @@ export default function Overlay() {
                      </div>
                 ) : (
                     // Default Ticker Mode
-                    <div className="flex items-center h-full px-6 gap-5 bg-white text-[26px] font-medium text-[#280058]">
-                        <div className="w-[14px] h-[14px] bg-[#280058] shrink-0"></div>
+                    <div className="flex items-center h-full px-6 gap-5 bg-white text-[26px] font-medium text-[#280058]" style={{ color: data.primaryColor || '#280058' }}>
+                        <div className="w-[14px] h-[14px] shrink-0" style={primaryBg}></div>
                         <AnimatePresence mode="wait">
                             <motion.span
                                 key={data.tickerItems[0]}
@@ -247,7 +262,7 @@ export default function Overlay() {
             </div>
 
             {/* Clock */}
-            <div className="w-[140px] flex items-center justify-center bg-[#1E0043] text-white font-bold text-[30px] shrink-0 ml-[2px]">
+            <div className="w-[140px] flex items-center justify-center text-white font-bold text-[30px] shrink-0 ml-[2px]" style={darkBg}>
                 {format(time, "HH:mm")}
             </div>
         </div>

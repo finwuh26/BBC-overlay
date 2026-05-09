@@ -23,18 +23,27 @@ async function startServer() {
     subheadline: "Sir Keir Starmer's party is forecast to win a majority of 170 seats",
     breaking: false,
     mode: "exit_poll", // "exit_poll" or "results"
-    tickerMode: "text", // "text" or "results"
+    tickerMode: "results", // "text" or "results"
+    
+    // Style settings
+    primaryColor: "#280058", // BBC Election Purple
+    darkColor: "#1E0043", // Darker purple for clock/scoreboard
+    logoTitle: "ELECTION",
+    logoTextClass: "text-white",
+    bbcBoxesClass: "bg-white text-black",
+    crystalUrl: "",
+
     parties: [
-      { id: "lab", name: "LAB", seats: 2, color: "#E4003B", visible: true },
-      { id: "con", name: "CON", seats: 10, color: "#0087DC", visible: true },
-      { id: "ld", name: "LD", seats: 0, color: "#FAA61A", visible: true },
-      { id: "bin", name: "BIN", seats: 8, color: "#A0A0A0", visible: true },
-      { id: "ref", name: "REF", seats: 0, color: "#12B6CF", visible: false },
-      { id: "pc", name: "PC", seats: 0, color: "#008142", visible: false },
+      { id: "lab", name: "LAB", seats: 410, color: "#E4003B", visible: true },
+      { id: "con", name: "CON", seats: 131, color: "#0087DC", visible: true },
+      { id: "ld", name: "LD", seats: 61, color: "#FAA61A", visible: true },
+      { id: "ref", name: "REF", seats: 13, color: "#12B6CF", visible: true },
+      { id: "pc", name: "PC", seats: 4, color: "#008142", visible: true },
       { id: "grn", name: "GRN", seats: 0, color: "#02A95B", visible: false },
       { id: "snp", name: "SNP", seats: 0, color: "#FDF38E", visible: false },
+      { id: "bin", name: "BIN", seats: 8, color: "#A0A0A0", visible: false },
     ],
-    majorityTarget: 11,
+    majorityTarget: 326,
     tickerItems: [
       "National results and analysis at bbc.co.uk/news or the BBC News app",
     ],

@@ -27,6 +27,64 @@ export default function Dashboard() {
     updateData(stagingData);
   };
 
+  const loadPreset = (presetName: string) => {
+      let overrides: any = {};
+      if (presetName === 'election_hung') {
+          overrides = {
+              theme: "election",
+              mode: "exit_poll",
+              tickerMode: "text",
+              headline: "EXIT POLL: HUNG PARLIAMENT",
+              subheadline: "Exit poll predicts Hung Parliament with Conservatives as largest party",
+              primaryColor: "#280058",
+              darkColor: "#1E0043",
+              logoTitle: "ELECTION",
+              crystalUrl: "",
+              breaking: true,
+              majorityTarget: 11,
+              parties: stagingData.parties.map((p: any) => ({
+                  ...p,
+                  seats: p.id === 'con' ? 10 : p.id === 'lab' ? 2 : p.id === 'bin' ? 8 : 0,
+                  visible: ['lab', 'con', 'ld', 'bin'].includes(p.id)
+              }))
+          };
+      } else if (presetName === 'election_landslide') {
+          overrides = {
+              theme: "election",
+              mode: "exit_poll",
+              tickerMode: "results",
+              headline: "EXIT POLL: LABOUR LANDSLIDE",
+              subheadline: "Sir Keir Starmer's party is forecast to win a majority of 170 seats",
+              primaryColor: "#280058",
+              darkColor: "#1E0043",
+              logoTitle: "ELECTION",
+              crystalUrl: "",
+              breaking: false,
+              majorityTarget: 326,
+              parties: stagingData.parties.map((p: any) => ({
+                  ...p,
+                  seats: p.id === 'lab' ? 410 : p.id === 'con' ? 131 : p.id === 'ld' ? 61 : p.id === 'ref' ? 13 : p.id === 'pc' ? 4 : 0,
+                  visible: ['lab', 'con', 'ld', 'ref', 'pc'].includes(p.id)
+              }))
+          };
+      } else if (presetName === 'news_banner') {
+          overrides = {
+              theme: "news",
+              tickerMode: "text",
+              headline: "Court rejects Virginia Democrats redistricting plan",
+              subheadline: "",
+              tickerItems: ["Iran accuses US of 'reckless military adventure'"],
+              primaryColor: "#B80000",
+              darkColor: "#B80000",
+              logoTitle: "NEWS",
+              bbcBoxesClass: "bg-white text-black",
+              crystalUrl: "",
+              breaking: false
+          };
+      }
+      handleUpdate(overrides);
+  };
+
   const togglePartyVisibility = (index: number) => {
       const newParties = [...stagingData.parties];
       newParties[index].visible = !newParties[index].visible;
@@ -60,7 +118,12 @@ export default function Dashboard() {
             <h1 className="text-3xl font-bold text-neutral-900 tracking-tight">Election Control</h1>
             <p className="text-neutral-500 mt-1">Manage live graphics and data (Draft Mode)</p>
           </div>
-          <div className="flex gap-4 items-center">
+          <div className="flex gap-4 items-center flex-wrap justify-end">
+             <div className="flex items-center gap-2 mr-4 border-r border-neutral-300 pr-4">
+                 <button onClick={() => loadPreset('election_hung')} className="text-sm font-medium bg-neutral-100 hover:bg-neutral-200 px-3 py-1.5 rounded text-neutral-700">Preset: Hung</button>
+                 <button onClick={() => loadPreset('election_landslide')} className="text-sm font-medium bg-neutral-100 hover:bg-neutral-200 px-3 py-1.5 rounded text-neutral-700">Preset: Landslide</button>
+                 <button onClick={() => loadPreset('news_banner')} className="text-sm font-medium bg-neutral-100 hover:bg-neutral-200 px-3 py-1.5 rounded text-neutral-700">Preset: News</button>
+             </div>
              {hasUnsavedChanges && (
                 <span className="text-amber-600 font-medium text-sm animate-pulse">Unsaved changes...</span>
              )}
@@ -88,7 +151,7 @@ export default function Dashboard() {
                  
                  <div className="grid grid-cols-2 gap-4">
                     <div>
-                        <label className="block text-sm font-medium text-neutral-700 mb-1">Theme</label>
+                        <label className="block text-sm font-medium text-neutral-700 mb-1">Theme / Branding</label>
                         <select 
                             className="w-full border border-neutral-300 p-2 rounded focus:ring-2 focus:ring-[#2D0060] outline-none"
                             value={stagingData.theme}
@@ -120,6 +183,65 @@ export default function Dashboard() {
                             <option value="results">Recent Results Flashes</option>
                         </select>
                     </div>
+                 </div>
+
+                 <div className="grid grid-cols-3 gap-4 pt-4 border-t border-neutral-100">
+                    <div>
+                        <label className="block text-sm font-medium text-neutral-700 mb-1">Global Primary Color</label>
+                        <div className="flex gap-2">
+                            <input 
+                                type="color" 
+                                className="h-10 w-12 border border-neutral-300 rounded cursor-pointer"
+                                value={stagingData.primaryColor || '#280058'}
+                                onChange={(e) => handleUpdate({ primaryColor: e.target.value })}
+                            />
+                            <input 
+                                type="text" 
+                                className="flex-1 border border-neutral-300 p-2 rounded font-mono text-sm"
+                                value={stagingData.primaryColor || '#280058'}
+                                onChange={(e) => handleUpdate({ primaryColor: e.target.value })}
+                            />
+                        </div>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-neutral-700 mb-1">Global Dark Color</label>
+                        <div className="flex gap-2">
+                            <input 
+                                type="color" 
+                                className="h-10 w-12 border border-neutral-300 rounded cursor-pointer"
+                                value={stagingData.darkColor || '#1E0043'}
+                                onChange={(e) => handleUpdate({ darkColor: e.target.value })}
+                            />
+                            <input 
+                                type="text" 
+                                className="flex-1 border border-neutral-300 p-2 rounded font-mono text-sm"
+                                value={stagingData.darkColor || '#1E0043'}
+                                onChange={(e) => handleUpdate({ darkColor: e.target.value })}
+                            />
+                        </div>
+                    </div>
+                     <div>
+                        <label className="block text-sm font-medium text-neutral-700 mb-1">Logo Title</label>
+                        <input 
+                            type="text" 
+                            className="w-full border border-neutral-300 p-2 rounded uppercase"
+                            value={stagingData.logoTitle}
+                            onChange={(e) => handleUpdate({ logoTitle: e.target.value })}
+                        />
+                    </div>
+                </div>
+                
+                 <div className="grid grid-cols-2 gap-4 pt-4 border-t border-neutral-100">
+                     <div>
+                        <label className="block text-sm font-medium text-neutral-700 mb-1">Custom Image URL (Cyrstal/Icon)</label>
+                        <input 
+                            type="text" 
+                            placeholder="Leave blank for default generated CSS icon"
+                            className="w-full border border-neutral-300 p-2 rounded text-sm placeholder:text-neutral-400"
+                            value={stagingData.crystalUrl || ''}
+                            onChange={(e) => handleUpdate({ crystalUrl: e.target.value })}
+                        />
+                     </div>
                  </div>
 
                  <div className="space-y-4 pt-4 border-t border-neutral-100">

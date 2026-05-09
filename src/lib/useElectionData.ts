@@ -23,6 +23,12 @@ interface ElectionData {
   breaking: boolean;
   mode: string;
   tickerMode: string;
+  primaryColor: string;
+  darkColor: string;
+  logoTitle: string;
+  logoTextClass: string;
+  bbcBoxesClass: string;
+  crystalUrl?: string;
   parties: Party[];
   majorityTarget: number;
   tickerItems: string[];
